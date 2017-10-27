@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+	<meta charset="UTF-8">
+ 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+	<title>详情</title>
+	<link rel="stylesheet" type="text/css" href="css/detail.css">
+	<link rel="stylesheet" type="text/css" href="css/baguetteBox.css">
+</head>
+<body>
+
+<div class="main" id="main">
+		<div class="loadding">
+			<img class="rotate" style="width: 30px" src="img/rotate.png"/>
+			<img class="rotate_icon" style="width: 30px;" src="img/rotate_icon.png"/>
+		</div>
+	
+</div>
+<script id="module" type="text/html">
+	<div style="margin-bottom: 80px;">
+	<div class="video" style="">
+		<%if(productInfo.linkUrl){%>
+		<video style="height: 17.4rem;width: 100%;"> src="<%=productInfo.linkUrl%>" controls="controls">
+		您的浏览器不支持video标签
+		</video>
+		<%}else{%>
+			<img style="height: 17.4rem;width: 100%;" src="<%=productInfo.imgPath%>" />
+		<%}%>
+	</div>
+	<span class="projectState <%=formatStateStyle(productInfo.state)%>"><%=formatState(productInfo.state)%></span>
+	<div class="detail" id="detail" style="margin: 20px 15px 15px 10px;">
+		<h3><%=productInfo.projectMainTitle%></h3>
+		<p class="summaryText"><%=productInfo.summaryText%></p>
+		<div class="sign">
+			<span class="location">
+				<span class="icon_location"></span><span class="city_name"><%=productInfo.projectAdds%></span>
+			</span>
+			<% for (var i = 0; i < productInfo.projectCharacter.length; i ++) { %>
+				<span class="label"><%=productInfo.projectCharacter[i]%></span>
+			<%}%>
+		</div>
+		<div id="progressbar"></div>
+		<!--判断是否认证合格投资人-->
+		<%if(authFlag=="1"){%>
+			<!--根据项目状态分别显示不同信息 0预热期 1，2认购 3交割 4交割完成 5退出 6募集成功 7募集失败-->
+			<%if(productInfo.state=="0"){%>  
+			    <div class="item">
+					<span>
+						<span class="item_title">募集</span>
+						<span><%=productInfo.salesQuota%>万元</span>
+					</span>
+					<span>
+						<span class="item_title">最低起投</span>
+						<span><%=productInfo.minPayAmt%>万元</span>
+					</span>
+					<span style="float: right;">
+						<span class="item_title">开始时间</span>
+						<span><%=productInfo.issBgnDt%></span>
+					</span>
+					<div style="clear:both;"></div>
+				</div>
+			<%}else if(productInfo.state=="1"||productInfo.state=="2"){%>
+				<div class="item">
+					<span>
+						<span class="item_title">募集</span>
+						<span><%=productInfo.salesQuota%>万元</span>
+					</span>
+					<span>
+						<span class="item_title">最低起投</span>
+						<span><%=productInfo.minPayAmt%>万元</span>
+					</span>
+					<span style="float: right;">
+						<span class="item_title">剩余</span>
+						<span><%=productInfo.remainDays%>天</span>
+					</span>
+					<div style="clear:both;"></div>
+				</div>
+			<%}else if(productInfo.state=="3"){%>
+				<div class="item">
+					<span class="item_title"><%=productInfo.issBgnDt%></span>
+				</div>
+			<%}else if(productInfo.state=="4"){%>
+				<div class="item">
+					<span class="item_title"><%=productInfo.issBgnDt%></span>
+				</div>
+			<%}else if(productInfo.state=="5"){%>
+				<!--不显示任何信息-->
+			<%}else if(productInfo.state=="6"){%>
+				<div class="item">
+					<span class="item_title"><%=productInfo.issBgnDt%></span>
+				</div>
+			<%}else if(productInfo.state=="7"){%>
+				<div class="item">
+					<span>
+						<span class="item_title">募集</span>
+						<span><%=productInfo.salesQuota%>万元</span>
+					</span>
+					<span>
+						<span class="item_title">最低起投</span>
+						<span><%=productInfo.minPayAmt%>万元</span>
+					</span>
+					<span style="float: right;">
+						<span class="item_title">剩余</span>
+						<span>0天</span>
+					</span>
+					<div style="clear:both;"></div>
+				</div>
+			<%}else{%>
+
+			<%}%>
+		<%}%>  
+	</div>
+	<div class="part_line"></div>
+	<div class="info" style="margin-bottom: 6rem;">
+		<ul class="menus" id="menus">
+			<li class="active" data-href="introduce" onclick="changeItem(this)">项目介绍</li>
+			<li class="" data-href="finance" onclick="changeItem(this)">融资信息</li>
+			<li class="" data-href="progress" onclick="changeItem(this)">项目进展</li>
+			<li class="" data-href="follow" onclick="changeItem(this)">跟投人</li>
+			<div style="clear:both;"></div>
+		</ul>
+		<div style="clear:both;"></div>
+		<div class="content introduce">
+			<div class="introduce">
+			<% for (var i = 0; i < productIntroduceList.length; i ++) { %>
+				<div class="moduleItem">
+					<h3><%=productIntroduceList[i].introduceName%></h3>
+					<div><%=unUnicode(productIntroduceList[i].introduceValues)%></div>
+				</div>
+			<%}%>
+			<!--两个协议：收益与退出机制、风险提示-->
+				<div class="part_line"></div>
+				<div class="agreement" style="padding:1.5rem">
+					<h3>收益与退出机制</h3>
+					<div class="agreement_p" style="margin-top: 1rem">
+						<p class="p_title">(一)投资期内收益分配安排</p>
+						<p>1、大连龙臻于每个会计年度结束后三个月内进行审计，在当期存在可分配收益的情况下（即收入扣除税费、成本、公积金等费用后之净收益），按照股东持股比例分配该等收益。</p>
+						<p>2、如大连龙臻参与资本运作，不论是股权收购或资产收购，投资人按照届时持股比例享有收购产生之净收益。</p>
+						<p>3、投资人不承担投资相关费用</p>
+						<p class="p_title">(二)退出机制及收益分配安排</p>
+						<p>退出机制：</p>
+						<p>投资者在未来3至5年内可通过以下几种方式退出：</p>
+						<p>1、公开上市：一旦时机成熟，本项目可在国内外上市，包括国内、香港和美国，将以其题材独特，行业发展前景良好，公司业绩优良等特质受到资本市场的欢迎。此时，风险投资者可以选择合适时机退出。</p>
+						<p>2、股权转让：股东对所持有的公司股权的转让权是公司法中的一项基本法律制度。经过本公司股东同意，投资者可转让给有意向的第三方，包括个人、公司、投资机构。</p>
+						<p>3、收购和兼并（M&A）：本项目在未来的发展过程中，可能存在由另一家企业兼并收购，投资者可以选择在此时出售股份来实现投资退出。</p>
+						<p>4、公司清算：如果因为本项目公司的经营失败等原因导致其它退出机制成为不可能时，对公司解散和清算将是避免更大损失的唯一选择。通过公司解散和清算来退出投资是投资者最后的选择。此时，将根据法律依据进行相关的公司清算破产，投资者和本项目公司股东将承担各自的亏损风险。</p>
+						<p>收益分配安排：</p>
+						<p>投资者成为公司股东后，依照法律、本合同和公司章程的规定享有所有股东权益并承担相应股东义务，甲方的资本公积、盈余公司和未分配利润由投资者和公司其他股东按股份比例享有。</p>
+					</div>
+					<h3 style="margin-top: 1rem">风险提示</h3>
+					<div style="margin-top: 1rem">
+						<p>尊敬的投资者:</p>
+						<p style="text-indent: 2em">据《公司法》、《证券法》等法律法规和自律规则，特提供本风险提示，请认真详细阅读。 投资者从事私募股权投资存在如下风险:</p>
+						<p>(一)宏观经济风险。由于我国宏观经济形势的变化以及周边国家、地区宏观经济环境和证券市场的变化，可能会引起国内 宏观经济市场的波动，使您存在亏损的可能，您将不得不承担由 此造成的损失。</p>
+						<p>(二)行业政策风险。有关行业的法律、法规及相关政策、 规则发生变化，可能引起行业整体发生波动，使您存在亏损的可 能，您将不得不承担由此造成的损失。</p>
+						<p>(三)购买力风险。又称通货膨胀风险，由于通货膨胀、货 币贬值，您的实际收益水平可能存在下降的风险，您将不得不承 担由此造成的损失</p>
+						<p>(四)公司经营风险。由于公司所处行业整体经营形势的变 化;公司经营管理等方面的因素，如经营决策重大失误、高级管 理人员变更、重大诉讼等都可能引起该公司市场表现的波动;由 于公司经营不善甚至于会导致该公司最终破产，这些都使您存在 亏损的可能。</p>
+						<p>(五)财务风险。融资企业因资产结构、负债结构和其他财务结构不合理、对外履行担保代偿责任等而形成的财务风险。</p>
+						<p>(六)盈利未达预期的风险。本融资计划书中有关投资者未 来收益的预测仅为根据一般情形所做测算，存在盈利未达预期的风险。</p>
+						<p>(七)退出风险。由于融资企业未提供明确的股权退出途径或退出途径发生变化，可能存在您的投资无法及时退出的风险， 您将不得不承担由此导致的损失。</p>
+						<p>(八)估值风险。融资企业估值可能存在与企业实际价值不 一致的情形，对您的投资造成影响，您将不得不承担由此带来的 风险。</p>
+						<p>(九)分红收益不稳定的风险。由于企业分红方案需根据实 际盈利状况进行调整，可能存在分红收益不稳定的风险，由此可 能给您带来损失。</p>
+						<p>(十)技术风险。由于您的投资行为可能需通过电子通讯技 术和电脑技术来实现，这些技术存在着被网络黑客和计算机病毒 攻击的可能，由此可能给您带来损失。</p>
+						<p>(十一)不可抗力因素导致的风险。诸如地震、火灾、水灾、 战争等不可抗力因素可能导致您的损失，因无法控制和不可预测 的系统故障、设备故障、通讯故障、电力故障等也可能导致投资 过程中的相关系统非正常运行甚至瘫痪，这些都会使您的投资无 法完成或者无法全部完成，您将不得不承担由此导致的损失。</p>
+						<p>(十二)本项目特有的其他风险</p>
+						<P>1、投资不成功风险:融资企业和推荐机构可以在募集期每天 日终、募集认购期结束时及登记办理期间这三个时点按照一定的 投资者筛选标准对认购人名册进行筛选，筛选后排除的投资者面 临投资不成功的风险:资金募集过程中若出现重大事项导致募集 活动无法继续的，投资者将面临投资不成功的风险。</P>
+						<p>2、投资规模仅达到下限对后续经营影响的风险:本次募集规 模为 1000 万元，募集规模下限为 500 万元，仅达到本次募集规模 的 50%。如本次募集仅达到募集规模下限，也足以满足融资企业 开工建设所需，融资企业近期建设等后续经营计划不会产生较大 影响，但融资企业可能会在本次募集资金用尽后根据项目运营所 需考虑进行后续融资。后续融资可能会导致投资者面临通过本次 募集所认购成功的股权比例被摊薄的风险。</p>
+						<p>3、认缴注册资本未缴足的风险:公司 2013 年 10 月成立，注 册资本 500 万元人民币，实缴资本 10 万元，股东目前未完成全部实缴，因此投资者可能面临现有股东认缴注册资本未缴足的风险。</p>
+						<p>4、募集期不确定风险:融资企业或推荐机构可根据实际募集 情况决定在募集期限内适当延长或缩短本私募股权融资的募集时 间，融资企业或推荐机构将及时进行公告。因此，投资者可能会 面临募集期延长或缩短的风险。</p>
+						<p>5、财务报表未审计风险:公司提供的 2015 年 01 月 01 日-2017 年 06 月 30 日的财务报表，未经过专业审计机构审计，因此投资 者可能面临公司的财务报告未经审计的风险</p>
+						<p>6、推荐机构风险:担任此融资计划推荐机构的基金公司，因 停业、解散、撤销、破产，或者被中国证监会(银监会)撤销相 关业务许可等原因不能履行职责，可能给投资者带来一定风险。</p>
+						<p>7、股权流动性风险:本次融资公司向投资者出让的股权为非 上市公司股权，股权流动性较差，因此投资者可能面临股权无法 出让的风险。此风险提示仅对从事私募股权投资的风险进行部分列举，而 非全面揭示。投资者应当认真阅读本融资计划书及其有关的信息 披露文件，进行独立投资判断，谨慎作出投资决策，并自行承担 相关风险。</p>
+						<p>中证机构间报价系统股份有限公司对本次融资所作的任何决 定，均不表明其对本次融资的投资价值或者投资人的收益作出实 质性判断或保证。</p>
+					</div>
+				</div>
+			</div>
+			<div class="finance">
+				<%if(authFlag=="1"){%>
+					<p class="finance_title">企业信息</p>
+					<table>
+						<tr><td style="width: 40%" class="tab_title">企业名称</td><td class="tab_val"><%=productTrading.componyInfo.companyName%></td></tr>
+						<tr><td class="tab_title">企业法人</td><td class="tab_val"><%=productTrading.componyInfo.companyPersonName%></td></tr>
+						<tr><td class="tab_title">企业成立时间</td><td class="tab_val"><%=productTrading.componyInfo.companyHoldTime%></td></tr>
+						<tr><td class="tab_title">企业组织机构代码</td><td class="tab_val"><%=productTrading.componyInfo.companyCode%></td></tr>
+						<tr><td class="tab_title">企业注册地址</td><td class="tab_val"><%=productTrading.componyInfo.companyRegistAdds%></td></tr>
+						<tr><td class="tab_title">企业行业类别</td><td class="tab_val"><%=productTrading.componyInfo.companyTradeType%></td></tr>
+					</table>
+					<p class="finance_title">项目信息</p>
+					<table>
+						<tr><td style="width: 45%" class="tab_title">项目名称</td><td class="tab_val"><%=productTrading.productInfo.projectName%></td></tr>
+						<tr><td class="tab_title">风险等级</td><td class="tab_val"><%=formatRiskLvl(productTrading.productInfo.riskLvl)%></td></tr>
+						<tr><td class="tab_title">项目所在地</td><td class="tab_val"><%=productTrading.productInfo.projectAdds%></td></tr>
+						<tr><td class="tab_title">产品代码</td><td class="tab_val"><%=productTrading.productInfo.projectCode%></td></tr>
+						<tr><td class="tab_title">可认购股东数</td><td class="tab_val"><%=productTrading.productInfo.canShareholdersNum%></td></tr>
+						<tr><td class="tab_title">目标额度（万元）</td><td class="tab_val special_val"><%=productTrading.productInfo.targetAmt==0?'不限':numFormat(productTrading.productInfo.targetAmt)%></td></tr>
+						<tr><td class="tab_title">出让股份</td><td class="tab_val special_val"><%=numFormat(productTrading.productInfo.sellingShare)%></td></tr>
+						<tr><td class="tab_title">最低目标额度（万元）</td><td class="tab_val special_val"><%=numFormat(productTrading.productInfo.minTargetAmt)%></td></tr>
+						<tr><td class="tab_title">最低出让股份</td><td class="tab_val special_val"><%=numFormat(productTrading.productInfo.minSellingShare)%></td></tr>
+						<tr><td class="tab_title">最高目标额度（万元）</td><td class="tab_val special_val"><%=numFormat(productTrading.productInfo.maxTargetAmt)%></td></tr>
+						<tr><td class="tab_title">最高出让股份</td><td class="tab_val special_val"><%=numFormat(productTrading.productInfo.maxSellingShare)%></td></tr>
+						<tr><td class="tab_title">最低认购金额（元）</td><td class="tab_val special_val"><%=numFormat(productTrading.productInfo.minPayAmt)%></td></tr>
+						<tr><td class="tab_title">最大认购金额（元）</td><td class="tab_val special_val"><%=numFormat(productTrading.productInfo.maxPayAmt)%></td></tr>
+						<tr><td class="tab_title">最小追加金额（元）</td><td class="tab_val special_val"><%=numFormat(productTrading.productInfo.addAmt)%></td></tr>
+						<tr><td class="tab_title">发行开始日期</td><td class="tab_val"><%=productTrading.productInfo.issBgnDt%></td></tr>
+						<tr><td class="tab_title">发行结束日期</td><td class="tab_val"><%=productTrading.productInfo.issEndDt%></td></tr>
+						<tr><td class="tab_title">产品募集说明书</td>
+							<%if(productTrading.productInfo.productProspectus){%>
+							<td class="tab_val"><a href="<%=picHost%><%=productTrading.productInfo.productProspectus%>" class="special_val">查看PDF</a></td>
+							<%}else{%>
+								<td class="tab_val">无</td>
+							<%}%>
+						</tr>
+					</table>
+				<%}else{%>
+					<!--未认证合格投资人-->
+					<button class="authen_btn" onclick="renZhengMan()">认证合格投资人后可查看</button>
+				<%}%>
+			</div>
+			<div class="progress">
+				<%if(authFlag=="1"){%>
+				
+					<%if(productProgressList.length>0){%>
+						<% for (var i = 0; i < productProgressList.length; i ++) { %>
+							<div class="progressItem">
+								<div class="time">
+									<span class="time_date"><%=productProgressList[i].timeDate%></span>
+									<span class="time_year"><%=productProgressList[i].timeYear%></span>
+								</div>
+								<div class="progress_content">
+									<span class="icon_circular"></span>
+									<div class="content_text">
+										<%=productProgressList[i].introduceValues%>
+									</div>
+									<div class="clearfix">
+										<div class="baguetteBoxOne">
+										<% for(var j=0;j < productProgressList[i].imgPathList.length;j++){%>
+							                <a href="<%=productProgressList[i].imgPathList[j]%>"><img style="width: 100px;height: 50px;float: left;margin-left: 10px;" src="<%=productProgressList[i].imgPathList[j]%>"></a>
+							            
+											<!-- <img style="width: 100px;height: 50px;float: left;margin-left: 10px;" src="<%=productProgressList[i].imgPathList[j]%>" /> -->
+										<%}%>
+										</div>
+										
+									</div>
+								</div>
+								<div style="clear: both"></div>
+							</div>
+						<%}%>
+						<!-- <div class="progressItem">
+								<div class="time">
+									<span class="time_date">21</span>
+									<span class="time_year">2017-06</span>
+								</div>
+								<div class="progress_content">
+									<span class="icon_circular"></span>
+									<div class="content_text">
+										内容从哪儿来，这恐怕是内容社区类APP运营人员最头痛的事情了吧。其实，在对内容型APP做运营的时候，需要先把内容运营的框架搭建好。777
+									</div>
+									<div class="clearfix">
+										<div class="baguetteBoxOne">
+							                <a href="img/nodata.png"><img style="width: 100px;height: 50px;float: left;margin-left: 10px;" src="img/nodata.png"></a>
+										</div>
+										
+									</div>
+								</div>
+								<div style="clear: both"></div>
+						</div> -->
+					<%}else{%>
+						<div class="nodata">
+							<img src="img/nodata.png" />
+							<p>暂无内容</p>
+						</div>
+					<%}%>
+				<%}else{%>
+				<!--未认证合格投资人-->
+				<button class="authen_btn" onclick="renZhengMan()">认证合格投资人后可查看</button>
+				<%}%>
+			</div>
+			<div id="follow" class="follow">
+			</div>
+		</div>
+	</div>
+	</div>
+	<div style="height: 30px;"></div>
+	<div class="btn_area">
+		<!--判断是否认证合格投资人-->
+		<%if(authFlag=="1"){%>
+			<!--判断是否风险评测-->
+			<%if(riskFlag=="1"){%>
+				<!--根据项目状态分别显示不同信息 0预热期 1，2认购 3交割 4交割完成 5退出 6募集成功 7募集失败-->
+				<%if(productInfo.state=="0"){%>
+					<span class="unable_btn"><%=productInfo.issBgnDt%> 起售</span>
+				<%}else if(productInfo.state=="1"||productInfo.state=="2"){%>
+					<span class="tip_btn"><%=unitChange(productInfo.minPayAmt)%>万元起投 <%=unitChange(productInfo.addAmt)%>万元累加</span>
+					<span class="sub_btn" onclick="myWantBuy()">我要认购</span>
+
+				<%}%>
+			<%}else{%>
+				<span class="auth" onclick="riskEvaluate()">风险测评</span>
+			<%}%>
+		<%}else{%>
+			<span class="auth" onclick="renZhengMan()">认证合格投资人查看更多信息</span>
+		<%}%>
+	</div>
+</script>
+<script id="followModule" type="text/html">
+	<!--produtInvestor-->
+	<%if(authFlag=="1"){%>
+		<%if(produtInvestor.length>0){%>
+			<%for(var i=0;i< produtInvestor.length;i++){%>
+			<div class="followItem clearfix" >
+				<div class="item_left clearfix">
+					<div class="header"><img src="<%=produtInvestor[i].iconfile%>" /></div>
+					<div class="userInfo">
+						<span><%=produtInvestor[i].userName%></span>
+						<span><%=produtInvestor[i].insDate%></span>
+					</div>
+				</div>
+				<p  class="item_right">支持<%=produtInvestor[i].amount%>元</p>
+			</div>
+			<%}%>
+			<!-- <div class="followItem clearfix" >
+				<div class="item_left clearfix">
+					<div class="header"><img src="img/nodata.png" /></div>
+					<div class="userInfo">
+						<span>张**</span>
+						<span>2017-06-23</span>
+					</div>
+				</div>
+				<p  class="item_right">支持8956元</p>
+			</div> -->
+		<%}else{%>
+			<div class="nodata">
+				<img src="img/nodata.png" />
+				<p>暂无内容</p>
+			</div>
+		<%}%>
+	<%}else{%>
+		<!--未认证合格投资人-->
+		<button class="authen_btn" onclick="renZhengMan()">认证合格投资人后可查看</button>
+	<%}%>	
+</script>
+<script id="showProject" type="text/html">
+	<div class="video">
+		<%if(productInfo.linkUrl){%>
+		<video src="<%=productInfo.linkUrl%>" controls="controls">
+		您的浏览器不支持video标签
+		</video>
+		<%}else{%>
+			<img style="width: 100%;height: 17.4rem;" src="<%=productInfo.imgPath%>" />
+		<%}%>
+	</div>
+	<span class="projectState showStyle">展示</span>
+	<div class="detail" id="detail"  style="margin: 20px 15px 15px 10px;">
+		<h3><%=productInfo.projectMainTitle%></h3>
+		<p class="summaryText"><%=productInfo.summaryText%></p>
+		<div class="sign">
+			<%if(productInfo.projectAdds){%>
+			<span class="location">
+				<span class="icon_location"></span><span class="city_name"><%=productInfo.projectAdds%></span>
+			</span>
+			<%}%>
+			<% for (var i = 0; i < productInfo.projectCharacter.length; i ++) { %>
+				<span class="label"><%=productInfo.projectCharacter[i]%></span>
+			<%}%>
+		</div>
+	</div>
+	<div class="part_line"></div>
+	<div class="info" style="margin-bottom: 6rem;">
+		<div class="content introduce">
+			<div class="introduce">
+			<% for (var i = 0; i < productIntroduceList.length; i ++) { %>
+				<div class="moduleItem">
+					<h3><%=productIntroduceList[i].introduceName%></h3>
+					<div><%=unUnicode(productIntroduceList[i].introduceValues)%></div>
+				</div>
+			<%}%>
+			</div>
+		</div>
+	</div>
+</script>
+
+<!-- <div id="progressbar1"></div> -->
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/template.js"></script>
+<script type="text/javascript" src="js/jquery.lineProgressbar.js"></script>
+<script type="text/javascript" src="js/detail.js"></script>
+<script type="text/javascript" src="js/baguetteBox.js"></script>
+</body>
+</html>
